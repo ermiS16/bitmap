@@ -6,7 +6,8 @@
  */
 
 #include <stdio.h>
-#include <bitmap.h>
+#include "bitmap.h"
+#include "myTypes.h"
 
 //typedef char = CHAR
 //typedef short = SHORT
@@ -15,7 +16,7 @@
 //typedef int = BOOL
 //typedef unsigned char = BYTE
 //typedef unsigned short = WORD
-
+/*
 typedef struct BITMAPFILEHEADER{
 	typedef unsigned short bfType;
 	typedef unsigned long bfSize;
@@ -50,3 +51,4 @@ typedef struct tagRGBTriple{
 	unsigned char rgbGreen;
 	unsigned char rgbRed;
 }RGBTRIPLE;
+*/

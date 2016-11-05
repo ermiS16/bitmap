@@ -9,5 +9,4 @@
 #define BITMAP_H_
 
 
-
 #endif /* BITMAP_H_ */

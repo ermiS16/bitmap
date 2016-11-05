@@ -5,15 +5,16 @@
  *      Author: Eric
  */
 
-#include "main.h";
-#include <stdio.h>;
-#include <String.h>;
+#include <stdio.h>
+#include "bitmap.h"
+#include "myError.h"
+#include "myTypes.h"
+#include "main.h"
 
-typedef struct Test{
 
-}__attribute__((__packed__)) Tele;
-
-void main(){
+int main(){
+	int errno;
 	printf("%d",0x01U);
-	;
+	errno = readFile("Unbenannt.bmp");
+	return errno;
 }

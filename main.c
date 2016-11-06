@@ -14,7 +14,12 @@
 
 int main(){
 	int errno;
-	printf("%d",0x01U);
-	errno = readFile("Unbenannt.bmp");
+	printf("%d\n",0x01U);
+	errno = readFile("Unbenannt.bmp\0");
+	if (errno == FILE_NOT_FOUND) {
+		printf("Datei wurde nicht gefunden! :(");
+		return -1;
+	}
+	printf("Datei wurde geöffnet! :)");
 	return errno;
 }

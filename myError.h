@@ -9,6 +9,7 @@
 #define BITMAP_MYERROR_H_
 
 #define OK 1
+#define MALLOC_FAIL -7
 #define FILE_NOT_FOUND -8
 
 #endif /* BITMAP_MYERROR_H_ */

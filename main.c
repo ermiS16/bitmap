@@ -13,9 +13,14 @@
 
 
 int main(){
-	int errno;
+	int errno = 0;
+	BITMAPFILEHEADER bfh = NULL;
+	BITMAPINFOHEADER bih = NULL;
+	char *pPixel = NULL;
+	RGBQUAD *pPalette = NULL;
+
 	printf("%d\n",0x01U);
-	errno = readFile("Unbenannt.bmp\0");
+	errno = int readFile("Unbenannt.bmp", &bfh, &bih, pPixel, pPalette);
 	if (errno == FILE_NOT_FOUND) {
 		printf("Datei wurde nicht gefunden! :(");
 		return -1;

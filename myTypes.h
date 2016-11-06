@@ -48,4 +48,10 @@ typedef struct tagRGBQUAD {
 	BYTE rgbReserved;
 } __attribute__((__packed__)) RGBQUAD;
 
+typedef struct tagRGBTRIPLE {
+	BYTE rgbBlue;
+	BYTE rgbGreen;
+	BYTE rgbRed;
+} __attribute__((__packed__)) RGBTRIPLE ;
+
 #endif /* BITMAP_MYTYPES_H_ */

@@ -13,7 +13,7 @@
 /**
  * Liest den FileHeader der Bitmap-Datei ein
  */
-BITMAPFILEHEADER readBitmapFileHeader (FILE *filep) {
+BITMAPFILEHEADER readBitmapFileHeader(FILE *filep) {
 	BITMAPFILEHEADER out;
 	memset(&out, 0, sizeof(BITMAPFILEHEADER));
 
@@ -29,7 +29,7 @@ BITMAPFILEHEADER readBitmapFileHeader (FILE *filep) {
 /**
  * Liest den Info-Header der Bitmap-Datei ein
  */
-BITMAPINFOHEADER readBitmapInfoHeader (FILE *filep) {
+BITMAPINFOHEADER readBitmapInfoHeader(FILE *filep) {
 	BITMAPINFOHEADER out;
 	memset(&out, 0, sizeof(BITMAPINFOHEADER));
 
@@ -48,13 +48,15 @@ BITMAPINFOHEADER readBitmapInfoHeader (FILE *filep) {
 	return out;
 }
 
-int readFile(char* filename) {
+int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char *pPixel, RGBQUAD *pPalette) {
 	BITMAPFILEHEADER bf;
 	BITMAPINFOHEADER bi;
 	RGBQUAD paletteEntry;
 	FILE *filep;
 	char *vlaPixel;
-	char *vlaPalette;
+	RGBQUAD *vlaPalette;
+
+	int pixelCounter = 0;
 
 	filep = fopen(filename, "r");
 
@@ -65,31 +67,51 @@ int readFile(char* filename) {
 	bf = readBitmapFileHeader(filep);
 	bi = readBitmapInfoHeader(filep);
 
-	if (vlaPalette = (*char)malloc(256 * sizeof(RGBQUAD)) == NULL) {
+	//Speicher fuer die Farb-Palette reservieren
+	vlaPalette = malloc(256 * sizeof(RGBQUAD));
+	if (vlaPalette == NULL) {
 		printf("Malloc failed!");
 		fclose(filep);
 		return MALLOC_FAIL;
 	}
 
-	for (int i = 0; i < 256; i++) {
-		fread(&paletteEntry.rgbBlue, sizeof(paletteEntry.rgbBlue), 1, filep);
-		fread(&paletteEntry.rgbGreen, sizeof(paletteEntry.rgbGreen), 1, filep);
-		fread(&paletteEntry.rgbRed, sizeof(paletteEntry.rgbRed), 1, filep);
-		fread(&paletteEntry.rgbReserved, sizeof(paletteEntry.rgbReserved), 1, filep);
-		vlaPixel[i] = paletteEntry;
+	//Eintraege der Farb-Palette auf dem Heap ablegen
+	if (bi.biBitCount == 8) {
+		for (int i = 0; i < 256; i++) {
+			fread(&paletteEntry.rgbBlue, sizeof(paletteEntry.rgbBlue), 1,
+					filep);
+			fread(&paletteEntry.rgbGreen, sizeof(paletteEntry.rgbGreen), 1,
+					filep);
+			fread(&paletteEntry.rgbRed, sizeof(paletteEntry.rgbRed), 1, filep);
+			fread(&paletteEntry.rgbReserved, sizeof(paletteEntry.rgbReserved),
+					1, filep);
+			vlaPalette[i] = paletteEntry;
+		}
 	}
 
-	if (vlaPixel = (*char)malloc(bi.biWidth * bi.biHeight) == NULL) {
+	if (bi.biCompression == 1) {
+		//RLE8-Kodierung
+	}
+
+	//Speicher für die Pixel auf dem Heap reservieren
+	pixelCounter = bi.biWidth * bi.biHeight;
+	vlaPixel = malloc(pixelCounter * sizeof(CHAR));
+	if (vlaPixel == NULL) {
 		printf("Malloc failed!");
 		fclose(filep);
 		free(vlaPalette);
 		return MALLOC_FAIL;
 	}
 
-
-	//Wenn End of File erreicht, schließe Datei
-	if (feof(filep)) {
-		fclose(filep);
+	//Pixel auf dem Heap ablegen
+	for(int i = 0; i < pixelCounter; i++) {
+		fread(vlaPixel[i], sizeof(char), 1, filep);
+		printf("%d", vlaPixel[i]);
 	}
+
+	pbf = bf;
+	pbi = bi;
+	pPixel = vlaPixel;
+	pPalette = vlaPalette;
 	return OK;
 }

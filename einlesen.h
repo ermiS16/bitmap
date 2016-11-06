@@ -10,9 +10,10 @@
 
 #include "myTypes.h"
 
-BITMAPFILEHEADER readBitmapFileHeader (FILE *filep);
-BITMAPINFOHEADER readBitmapInfoHeader (FILE *filep);
+BITMAPFILEHEADER readBitmapFileHeader(FILE *filep);
+BITMAPINFOHEADER readBitmapInfoHeader(FILE *filep);
 
-int readFile(char* filename);
+int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi,
+		char *pPixel, RGBQUAD *pPalette);
 
 #endif /* EINLESEN_H_ */

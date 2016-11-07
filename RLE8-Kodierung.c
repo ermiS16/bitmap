@@ -9,14 +9,19 @@
 #include "myTypes.h"
 
 int dekodierung(BITMAPINFOHEADER bi, char *vlaPixel) {
-	CHAR vlaPixelNew = malloc(bi.biHeight * bi.biWidth * sizeof(CHAR));
+	CHAR pixel;
+
+	if (bi.biWidth < 0) {
+		bi.biWidth *= -1;
+	}
+	CHAR vlaPixelNew = calloc(bi.biHeight * bi.biWidth * sizeof(CHAR));
 
 	for (int i = 0; i < bi.biHeight; i++) {
 		for (int j = 0; j < bi.biWidth; i++) {
 			switch (vlaPixel[i][j])  {
 				case 0x00:
 					if (vlaPixel[i][j+1] == 0x00) {
-						//TODO Ender der Zeile erreicht
+						//TODO Ende der Zeile erreicht
 						break;
 					} else {
 						if (vlaPixel[i][j+1] == 0x01) {
@@ -26,6 +31,7 @@ int dekodierung(BITMAPINFOHEADER bi, char *vlaPixel) {
 							if (vlaPixel[i][j+1] == 0x02) {
 								j += vlaPixel[i][j+2];
 								i += vlaPixel[i][j+3];
+								break;
 							}
 						}
 					}
@@ -34,13 +40,14 @@ int dekodierung(BITMAPINFOHEADER bi, char *vlaPixel) {
 					vlaPixelNew[i][j] = vlaPixel[i][j];
 					break;
 				default:
-					CHAR pixelInfo = vlaPixel[i][j+1];
+					pixel = vlaPixel[i][j+1];
 					for (int k = 0; k < vlaPixel[i][j]; k++) {
-						vlaPixelNew[i][j+k] = pixelInfo;
+						vlaPixelNew[i][j+k] = pixel;
 					}
 					break;
 			}
 		}
 	}
+	return OK;
 }
 

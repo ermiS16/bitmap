@@ -8,6 +8,6 @@
 #ifndef BITMAP_UMWANDELN_H_
 #define BITMAP_UMWANDELN_H_
 
-int bmpUmwandeln(BITMAPINFOHEADER bi, CHAR *pPixel, RGBQUAD *pPalette);
+int bmpUmwandeln(BITMAPINFOHEADER bi, CHAR *pPixel, RGBQUAD *pPalette, long counter);
 
 #endif /* BITMAP_UMWANDELN_H_ */

@@ -8,6 +8,6 @@
 #ifndef BITMAP_SCHREIBEN_H_
 #define BITMAP_SCHREIBEN_H_
 
-int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, char *vlaPixel);
+int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, char *vlaPixel, long counter);
 
 #endif /* BITMAP_SCHREIBEN_H_ */

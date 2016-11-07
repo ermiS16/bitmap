@@ -20,6 +20,7 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 	RGBQUAD *vlaPalette;
 	BYTE *vlaPixel;
 	int usedColors = 0;
+	long counter = 0;
 
 	filep = fopen(filename, "r");
 
@@ -68,13 +69,11 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 		fclose(filep);
 		return MALLOC_FAIL;
 	}
-
-	printf("FARBPALETTE\n");
+	//printf("FARBPALETTE\n");
 	//Eintraege der Farb-Palette auf dem Heap ablegen
 	for (int i = 0; i < usedColors; i++) {
 		fread(&paletteEntry, sizeof(paletteEntry), 1, filep);
 		vlaPalette[i] = paletteEntry;
-		//printf("%d: B:%d G:%d R:%d Rv:%d\n", i, vlaPalette[i].rgbBlue, vlaPalette[i].rgbGreen, vlaPalette[i].rgbRed, vlaPalette[i].rgbReserved);
 	}
 
 	//Speicher für die Pixel auf dem Heap reservieren
@@ -86,25 +85,37 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 		free(vlaPalette);
 		return MALLOC_FAIL;
 	}
+
 	fseek(filep, bf.bfOffBits, SEEK_SET);
 //	printf("Pixel\n");
 //	printf("Height: %d Width: %d\n", bi.biHeight,bi.biWidth);
 //	Pixel auf dem Heap ablegen
-	for(int i = 0; i < bi.biHeight; i++) {
-		fread(&vlaPixel[i], sizeof(BYTE), 1, filep);
+	for(int i = 0; i < (bi.biHeight * bi.biWidth); i++) {
+		if(feof(filep)!=0){
+			printf("EOF ERREICHT!");
+			break;
+		} else {
+			counter++;
+			fread(&vlaPixel[i], sizeof(BYTE), 1, filep);
+			printf("%d: %d\n", i, vlaPixel[i]);
+		}
 	}
-
+	printf("COUNTER: %d\n", counter);
+	printf("Pixel fertig");
 
 	if (bi.biCompression == 1) {
 		//RLE8-Kodierung
 
 	}
+	printf("Umwandeln");
+	bmpUmwandeln(bi, vlaPixel, vlaPalette, counter);
+	printf("Umwandeln fertig");
 
-	if (bi.biBitCount == 8) {
-		bmpUmwandeln(bi, pPixel, pPalette);
-	}
+//TODO Header ändern
 
-	writeFile(bf, bi, vlaPixel);
+	printf("Schreiben");
+	writeFile(bf, bi, vlaPixel, counter);
+	printf("Schreiben fertig");
 
 	if (feof(filep)) {
 		printf("Dateiende entdeckt");

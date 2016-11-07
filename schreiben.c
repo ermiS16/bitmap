@@ -8,14 +8,14 @@
 #include <stdio.h>
 #include "myError.h"
 #include "myTypes.h"
-//#include "schreiben.h"
+#include "schreiben.h"
 
 int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, char *vlaPixel) {
 	FILE *new;
 	int pixelCounter = 0;
 
 
-	new = fopen("newFile.bmp", "w");
+	new = fopen("/home/andre/workspace/GSP/bitmap/newFile.bmp", "w+");
 
 	fwrite(&bf.bfType, sizeof(bf.bfType), 1, new);
 	fwrite(&bf.bfSize, sizeof(bf.bfSize), 1, new);

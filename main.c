@@ -11,20 +11,27 @@
 #include "myTypes.h"
 #include "main.h"
 
-
-int main(){
+int main() {
 	int errno = 0;
-	BITMAPFILEHEADER bfh = NULL;
-	BITMAPINFOHEADER bih = NULL;
+	BITMAPFILEHEADER *bfh;
+	BITMAPINFOHEADER *bih;
 	char *pPixel = NULL;
 	RGBQUAD *pPalette = NULL;
 
-	printf("%d\n",0x01U);
-	errno = int readFile("Unbenannt.bmp", &bfh, &bih, pPixel, pPalette);
+	//printf("%d\n", 0x01U);
+	errno = readFile("/home/andre/workspace/GSP/bitmap/aufgabe3_bild1.bmp",
+			bfh, bih, pPixel, pPalette);
 	if (errno == FILE_NOT_FOUND) {
-		printf("Datei wurde nicht gefunden! :(");
+		printf(FILE_NOT_FOUND_TEXT);
 		return -1;
 	}
-	printf("Datei wurde geöffnet! :)");
+
+	if (errno != OK) {
+		printf(MALLOC_FAIL_TEXT);
+		return -1;
+	}
+
+	printf("Beendet");
+
 	return errno;
 }

@@ -2,7 +2,7 @@
  * myTypes.h
  *
  * Benutzt nicht die Standart int-Types,
- * da sonst Fheler bei unterschiedlichen Systemen auftreten koennen
+ * da sonst Fehler bei unterschiedlichen Systemen auftreten koennen
  *
  *  Created on: 05.11.2016
  *      Author: andre
@@ -10,14 +10,27 @@
 
 #ifndef BITMAP_MYTYPES_H_
 #define BITMAP_MYTYPES_H_
+#ifdef _WIN
 
-typedef __int8_t	CHAR;
-typedef __int16_t	SHORT;
-typedef __int32_t	LONG;
-typedef __uint64_t	DWORD;
-typedef __int32_t	BOOL;
-typedef __uint8_t	BYTE;
-typedef __uint16_t	WORD;
+typedef int8_t CHAR;
+typedef int16_t SHORT;
+typedef int32_t LONG;
+typedef uint64_t DWORD;
+typedef int32_t BOOL;
+typedef uint8_t BYTE;
+typedef uint16_t WORD;
+
+#else
+
+typedef __int8_t CHAR;
+typedef __int16_t SHORT;
+typedef __int32_t LONG;
+typedef __uint32_t DWORD;
+typedef __int32_t BOOL;
+typedef __uint8_t BYTE;
+typedef __uint16_t WORD;
+
+#endif
 
 typedef struct tagBITMAPFILEHEADER {
 	WORD bfType;
@@ -25,7 +38,7 @@ typedef struct tagBITMAPFILEHEADER {
 	WORD bfReserved1;
 	WORD bfReserved2;
 	DWORD bfOffBits;
-} __attribute__((__packed__)) BITMAPFILEHEADER, *PBITMAPFILEHEADER;
+} __attribute__((__packed__))BITMAPFILEHEADER, *PBITMAPFILEHEADER;
 
 typedef struct tagBITMAPINFOHEADER {
 	DWORD biSize;
@@ -39,19 +52,19 @@ typedef struct tagBITMAPINFOHEADER {
 	LONG biYPelsPerMeter;
 	DWORD biClrUsed;
 	DWORD biClrImportant;
-} __attribute__((__packed__)) BITMAPINFOHEADER, *PBITMAPINFOHEADER;
+} __attribute__((__packed__))BITMAPINFOHEADER, *PBITMAPINFOHEADER;
 
 typedef struct tagRGBQUAD {
 	BYTE rgbBlue;
 	BYTE rgbGreen;
 	BYTE rgbRed;
 	BYTE rgbReserved;
-} __attribute__((__packed__)) RGBQUAD;
+}__attribute__((__packed__))RGBQUAD;
 
 typedef struct tagRGBTRIPLE {
 	BYTE rgbBlue;
 	BYTE rgbGreen;
 	BYTE rgbRed;
-} __attribute__((__packed__)) RGBTRIPLE ;
+}__attribute__((__packed__))RGBTRIPLE;
 
 #endif /* BITMAP_MYTYPES_H_ */

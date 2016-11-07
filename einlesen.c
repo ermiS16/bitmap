@@ -9,54 +9,17 @@
 #include "myTypes.h"
 #include "myError.h"
 #include "einlesen.h"
-
-/**
- * Liest den FileHeader der Bitmap-Datei ein
- */
-BITMAPFILEHEADER readBitmapFileHeader(FILE *filep) {
-	BITMAPFILEHEADER out;
-	memset(&out, 0, sizeof(BITMAPFILEHEADER));
-
-	fread(&out.bfType, sizeof(out.bfType), 1, filep);
-	fread(&out.bfSize, sizeof(out.bfSize), 1, filep);
-	fread(&out.bfReserved1, sizeof(out.bfReserved1), 1, filep);
-	fread(&out.bfReserved2, sizeof(out.bfReserved2), 1, filep);
-	fread(&out.bfOffBits, sizeof(out.bfOffBits), 1, filep);
-
-	return out;
-}
-
-/**
- * Liest den Info-Header der Bitmap-Datei ein
- */
-BITMAPINFOHEADER readBitmapInfoHeader(FILE *filep) {
-	BITMAPINFOHEADER out;
-	memset(&out, 0, sizeof(BITMAPINFOHEADER));
-
-	fread(&out.biSize, sizeof(out.biSize), 1, filep);
-	fread(&out.biWidth, sizeof(out.biWidth), 1, filep);
-	fread(&out.biHeight, sizeof(out.biHeight), 1, filep);
-	fread(&out.biPlanes, sizeof(out.biPlanes), 1, filep);
-	fread(&out.biBitCount, sizeof(out.biBitCount), 1, filep);
-	fread(&out.biCompression, sizeof(out.biCompression), 1, filep);
-	fread(&out.biSizeImage, sizeof(out.biSizeImage), 1, filep);
-	fread(&out.biXPelsPerMeter, sizeof(out.biXPelsPerMeter), 1, filep);
-	fread(&out.biYPelsPerMeter, sizeof(out.biYPelsPerMeter), 1, filep);
-	fread(&out.biClrUsed, sizeof(out.biClrUsed), 1, filep);
-	fread(&out.biClrImportant, sizeof(out.biClrImportant), 1, filep);
-
-	return out;
-}
+#include "umwandeln.h"
+#include "schreiben.h"
 
 int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char *pPixel, RGBQUAD *pPalette) {
 	BITMAPFILEHEADER bf;
 	BITMAPINFOHEADER bi;
 	RGBQUAD paletteEntry;
 	FILE *filep;
-	char *vlaPixel;
 	RGBQUAD *vlaPalette;
-
-	int pixelCounter = 0;
+	BYTE *vlaPixel;
+	int usedColors = 0;
 
 	filep = fopen(filename, "r");
 
@@ -64,55 +27,93 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 		return FILE_NOT_FOUND;
 	}
 
-	bf = readBitmapFileHeader(filep);
-	bi = readBitmapInfoHeader(filep);
+	fread(&bf, sizeof(bf), 1, filep);
+	fread(&bi, sizeof(bi), 1, filep);
+
+//	printf("FILEHEADER\n");
+//	printf("%d\n", bf.bfType);
+//	printf("%d\n", bf.bfSize);
+//	printf("%d\n", bf.bfReserved1);
+//	printf("%d\n", bf.bfReserved2);
+//	printf("%d\n", bf.bfOffBits);
+//
+//	printf("INFOHEADER\n");
+//	printf("%d\n", bi.biSize);
+//	printf("%d\n", bi.biWidth);
+//	printf("%d\n", bi.biHeight);
+//	printf("%d\n", bi.biPlanes);
+//	printf("%d\n", bi.biBitCount);
+//	printf("%d\n", bi.biCompression);
+//	printf("%d\n", bi.biSizeImage);
+//	printf("%d\n", bi.biXPelsPerMeter);
+//	printf("%d\n", bi.biYPelsPerMeter);
+//	printf("%d\n", bi.biClrUsed);
+//	printf("%d\n", bi.biClrImportant);
+
+
+	if (bi.biHeight < 0) {
+		bi.biHeight *= -1;
+	}
+
+	if (bi.biClrUsed == 0) {
+		usedColors = 256;
+	} else {
+		usedColors = bi.biClrUsed;
+	}
 
 	//Speicher fuer die Farb-Palette reservieren
-	vlaPalette = malloc(256 * sizeof(RGBQUAD));
+	vlaPalette = malloc(usedColors * sizeof(RGBQUAD));
 	if (vlaPalette == NULL) {
 		printf("Malloc failed!");
 		fclose(filep);
 		return MALLOC_FAIL;
 	}
 
+	printf("FARBPALETTE\n");
 	//Eintraege der Farb-Palette auf dem Heap ablegen
-	if (bi.biBitCount == 8) {
-		for (int i = 0; i < 256; i++) {
-			fread(&paletteEntry.rgbBlue, sizeof(paletteEntry.rgbBlue), 1,
-					filep);
-			fread(&paletteEntry.rgbGreen, sizeof(paletteEntry.rgbGreen), 1,
-					filep);
-			fread(&paletteEntry.rgbRed, sizeof(paletteEntry.rgbRed), 1, filep);
-			fread(&paletteEntry.rgbReserved, sizeof(paletteEntry.rgbReserved),
-					1, filep);
-			vlaPalette[i] = paletteEntry;
-		}
-	}
-
-	if (bi.biCompression == 1) {
-		//RLE8-Kodierung
+	for (int i = 0; i < usedColors; i++) {
+		fread(&paletteEntry, sizeof(paletteEntry), 1, filep);
+		vlaPalette[i] = paletteEntry;
+		//printf("%d: B:%d G:%d R:%d Rv:%d\n", i, vlaPalette[i].rgbBlue, vlaPalette[i].rgbGreen, vlaPalette[i].rgbRed, vlaPalette[i].rgbReserved);
 	}
 
 	//Speicher für die Pixel auf dem Heap reservieren
-	pixelCounter = bi.biWidth * bi.biHeight;
-	vlaPixel = malloc(pixelCounter * sizeof(CHAR));
+	vlaPixel = malloc(bi.biWidth * bi.biHeight * sizeof(BYTE));
+
 	if (vlaPixel == NULL) {
 		printf("Malloc failed!");
 		fclose(filep);
 		free(vlaPalette);
 		return MALLOC_FAIL;
 	}
-
-	//Pixel auf dem Heap ablegen
+	fseek(filep, bf.bfOffBits, SEEK_SET);
+//	printf("Pixel\n");
+//	printf("Height: %d Width: %d\n", bi.biHeight,bi.biWidth);
+//	Pixel auf dem Heap ablegen
 	for(int i = 0; i < bi.biHeight; i++) {
-		for (int j = 0; j < bi.biWidth; j++) {
-			fread(vlaPixel[i][j], sizeof(char), 1, filep);
-			printf("%d", vlaPixel[i][j]);
-		}
+		fread(&vlaPixel[i], sizeof(BYTE), 1, filep);
 	}
 
-	pbf = bf;
-	pbi = bi;
+
+	if (bi.biCompression == 1) {
+		//RLE8-Kodierung
+
+	}
+
+	if (bi.biBitCount == 8) {
+		bmpUmwandeln(bi, pPixel, pPalette);
+	}
+
+	writeFile(bf, bi, vlaPixel);
+
+	if (feof(filep)) {
+		printf("Dateiende entdeckt");
+		fclose(filep);
+	} else {
+		printf("Dateiende nicht entdeckt!");
+		fclose(filep);
+	}
+
 	pPixel = vlaPixel;
 	pPalette = vlaPalette;
 	return OK;

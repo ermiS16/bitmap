@@ -104,9 +104,11 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 	}
 
 	//Pixel auf dem Heap ablegen
-	for(int i = 0; i < pixelCounter; i++) {
-		fread(vlaPixel[i], sizeof(char), 1, filep);
-		printf("%d", vlaPixel[i]);
+	for(int i = 0; i < bi.biHeight; i++) {
+		for (int j = 0; j < bi.biWidth; j++) {
+			fread(vlaPixel[i][j], sizeof(char), 1, filep);
+			printf("%d", vlaPixel[i][j]);
+		}
 	}
 
 	pbf = bf;

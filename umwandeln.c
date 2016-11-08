@@ -5,21 +5,24 @@
  *      Author: andre
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "myError.h"
 #include "myTypes.h"
 
 /**
  * Wandelt die Informationen der alten Pixel mit Hilfe der Farbpalette um.
  */
-int bmpUmwandeln(BITMAPINFOHEADER bi, CHAR *pPixel, RGBQUAD *pPalette, long counter) {
+int bmpUmwandeln(BITMAPINFOHEADER bi, RGBQUAD *pPixel, RGBQUAD *pPalette, long counter) {
 	RGBTRIPLE *newPalette;
 	newPalette = malloc(bi.biHeight * bi.biWidth * sizeof(RGBTRIPLE));
 	for (int i = 0; i < counter; i++) {
-			newPalette[i].rgbBlue = pPalette[pPixel[i]].rgbBlue;
-			newPalette[i].rgbGreen = pPalette[pPixel[i]].rgbGreen;
-			newPalette[i].rgbRed = pPalette[pPixel[i]].rgbRed;
+		/*
+			newPalette[i].rgbtBlue = pPalette[pPixel[i]].rgbBlue;
+			newPalette[i].rgbtGreen = pPalette[pPixel[i]].rgbGreen;
+			newPalette[i].rgbtRed = pPalette[pPixel[i]].rgbRed;
+			*/
 	}
 	//free(pPixel);
-	pPixel = newPalette;
+	//pPixel = newPalette;
 	return OK;
 }

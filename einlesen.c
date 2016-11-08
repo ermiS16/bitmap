@@ -5,6 +5,7 @@
  *      Author: Eric
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "bitmap.h"
 #include "myTypes.h"
 #include "myError.h"
@@ -18,7 +19,7 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 	RGBQUAD paletteEntry;
 	FILE *filep;
 	RGBQUAD *vlaPalette;
-	BYTE *vlaPixel;
+	RGBQUAD *vlaPixel = NULL;
 	int usedColors = 0;
 	long counter = 0;
 
@@ -90,17 +91,17 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 //	printf("Pixel\n");
 //	printf("Height: %d Width: %d\n", bi.biHeight,bi.biWidth);
 //	Pixel auf dem Heap ablegen
-	for(int i = 0; i < (bi.biHeight * bi.biWidth); i++) {
+	for(int i = 0; i < (bi.biWidth * bi.biHeight); i++) {
 		if(feof(filep)!=0){
 			printf("EOF ERREICHT!");
 			break;
 		} else {
 			counter++;
 			fread(&vlaPixel[i], sizeof(BYTE), 1, filep);
-			printf("%d: %d\n", i, vlaPixel[i]);
+			printf("i: %d\nRot: %d Gruen: %d Blau: %d\n", i, vlaPixel[i].rgbRed, vlaPixel[i].rgbGreen, vlaPixel[i].rgbBlue);
 		}
 	}
-	printf("COUNTER: %d\n", counter);
+	printf("COUNTER: %ld\n", counter);
 	printf("Pixel fertig");
 
 	if (bi.biCompression == 1) {
@@ -125,7 +126,7 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 		fclose(filep);
 	}
 
-	pPixel = vlaPixel;
+	//pPixel = vlaPixel;
 	pPalette = vlaPalette;
 	return OK;
 }

@@ -10,28 +10,30 @@
 #include "myError.h"
 #include "myTypes.h"
 #include "main.h"
+#include "einlesen.h"
 
 int main() {
-	int errno = 0;
-	BITMAPFILEHEADER *bfh;
-	BITMAPINFOHEADER *bih;
+	int errNo = 0;
+	BITMAPFILEHEADER *bfh = NULL;;
+	BITMAPINFOHEADER *bih = NULL;
 	char *pPixel = NULL;
 	RGBQUAD *pPalette = NULL;
 
 	//printf("%d\n", 0x01U);
-	errno = readFile("testBilder/aufgabe3_bild1.bmp",
+
+	errNo = readFile("testBilder/littleBitmap2_8.bmp",
 			bfh, bih, pPixel, pPalette);
-	if (errno == FILE_NOT_FOUND) {
+	if (errNo == FILE_NOT_FOUND) {
 		printf(FILE_NOT_FOUND_TEXT);
 		return -1;
 	}
 
-	if (errno != OK) {
+	if (errNo != OK) {
 		printf(MALLOC_FAIL_TEXT);
 		return -1;
 	}
 
 	printf("Beendet");
 
-	return errno;
+	return errNo;
 }

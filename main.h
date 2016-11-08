@@ -8,6 +8,6 @@
 #ifndef __MAIN_H_
 #define __MAIN_H_
 
-
+int main(void);
 
 #endif /* MAIN_H_ */

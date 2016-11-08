@@ -92,37 +92,39 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, BYTE 
 //	printf("Height: %d Width: %d\n", bi.biHeight,bi.biWidth);
 //	Pixel auf dem Heap ablegen
 	for(int i = 0; i < (bi.biWidth * bi.biHeight); i++) {
+
 		if(feof(filep)!=0){
 			printf("EOF ERREICHT!");
 			break;
 		} else {
 			counter++;
 			fread(&vlaPixel[i], sizeof(BYTE), 1, filep);
-			printf("i: %d %d\n", i, vlaPixel[i]);
+			printf("Pixel: %d %d\n", i, vlaPixel[i]);
+
 		}
 	}
 	printf("COUNTER: %ld\n", counter);
-	printf("Pixel fertig");
+	printf("Pixel fertig\n");
 
 	if (bi.biCompression == 1) {
 		//RLE8-Kodierung
 
 	}
-	printf("Umwandeln");
+	printf("Umwandeln\n");
 	bmpUmwandeln(bi, vlaPixel, vlaPalette, counter);
-	printf("Umwandeln fertig");
+	printf("Umwandeln fertig\n");
 
 //TODO Header ändern
 
-	printf("Schreiben");
+	printf("Schreiben\n");
 	writeFile(bf, bi, vlaPixel, counter);
-	printf("Schreiben fertig");
+	printf("Schreiben fertig\n");
 
 	if (feof(filep)) {
-		printf("Dateiende entdeckt");
+		printf("Dateiende entdeckt\n");
 		fclose(filep);
 	} else {
-		printf("Dateiende nicht entdeckt!");
+		printf("Dateiende nicht entdeckt!\n");
 		fclose(filep);
 	}
 

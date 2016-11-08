@@ -10,13 +10,20 @@
 #include "myTypes.h"
 #include "schreiben.h"
 
+#define BI_BIT_COUNT_24 24
+
 int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, BYTE *vlaPixel, long counter) {
 	FILE *new;
 	int pixelCounter = 0;
 
 
-	new = fopen("testBilder/newFile.bmp", "w+");
+	new = fopen("testBilder/newFile.bmp", "w");
+	if(NULL == new){
+		printf("Kann die Datei nicht oeffnen!\n");
+		fclose(new);
+	}
 
+	fseek(new,0,SEEK_END);
 	fwrite(&bf.bfType, sizeof(bf.bfType), 1, new);
 	fwrite(&bf.bfSize, sizeof(bf.bfSize), 1, new);
 	fwrite(&bf.bfReserved1, sizeof(bf.bfReserved1), 1, new);
@@ -27,7 +34,7 @@ int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, BYTE *vlaPixel, long cou
 	fwrite(&bi.biWidth, sizeof(bi.biWidth), 1, new);
 	fwrite(&bi.biHeight, sizeof(bi.biHeight), 1, new);
 	fwrite(&bi.biPlanes, sizeof(bi.biPlanes), 1, new);
-	fwrite(&bi.biBitCount, sizeof(bi.biBitCount), 1, new);
+	fwrite(&bi.biBitCount, BI_BIT_COUNT_24, 1, new);
 	fwrite(&bi.biCompression, sizeof(bi.biCompression), 1, new);
 	fwrite(&bi.biSizeImage, sizeof(bi.biSizeImage), 1, new);
 	fwrite(&bi.biXPelsPerMeter, sizeof(bi.biXPelsPerMeter), 1, new);
@@ -39,8 +46,8 @@ int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, BYTE *vlaPixel, long cou
 	for (int i = 0; i < counter; i++) {
 		fwrite(vlaPixel, sizeof(int), 1, new);
 	}
+	fclose(new);
 
-	printf("Schreiben fertig");
 	return OK;
 }
 

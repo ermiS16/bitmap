@@ -10,12 +10,12 @@
 #include "myTypes.h"
 #include "schreiben.h"
 
-int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, char *vlaPixel, long counter) {
+int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, RGBQUAD *vlaPixel, long counter) {
 	FILE *new;
 	int pixelCounter = 0;
 
 
-	new = fopen("/home/andre/workspace/GSP/bitmap/newFile.bmp", "w+");
+	new = fopen("testBilder/newFile.bmp", "w+");
 
 	fwrite(&bf.bfType, sizeof(bf.bfType), 1, new);
 	fwrite(&bf.bfSize, sizeof(bf.bfSize), 1, new);
@@ -37,7 +37,7 @@ int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, char *vlaPixel, long cou
 
 	pixelCounter = bi.biWidth * bi.biHeight;
 	for (int i = 0; i < counter; i++) {
-		fwrite(&vlaPixel, sizeof(int), 1, new);
+		fwrite(vlaPixel, sizeof(int), 1, new);
 	}
 
 	printf("Schreiben fertig");

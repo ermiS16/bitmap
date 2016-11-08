@@ -10,18 +10,10 @@
 
 #ifndef BITMAP_MYTYPES_H_
 #define BITMAP_MYTYPES_H_
-#ifdef _WIN
 
-typedef int8_t CHAR;
-typedef int16_t SHORT;
-typedef int32_t LONG;
-typedef uint64_t DWORD;
-typedef int32_t BOOL;
-typedef int8_t BYTE;
-typedef uint16_t WORD;
+#include <stdint.h>
 
-#else
-
+#ifdef LINUX
 typedef __int8_t CHAR;
 typedef __int16_t SHORT;
 typedef __int32_t LONG;
@@ -29,6 +21,15 @@ typedef __uint32_t DWORD;
 typedef __int32_t BOOL;
 typedef __uint8_t BYTE;
 typedef __uint16_t WORD;
+
+#else
+typedef int8_t CHAR;
+typedef int16_t SHORT;
+typedef int32_t LONG;
+typedef uint32_t DWORD;
+typedef int32_t BOOL;
+typedef int8_t BYTE;
+typedef uint16_t WORD;
 
 #endif
 
@@ -62,9 +63,9 @@ typedef struct tagRGBQUAD {
 }__attribute__((__packed__))RGBQUAD;
 
 typedef struct tagRGBTRIPLE {
-	BYTE rgbBlue;
-	BYTE rgbGreen;
-	BYTE rgbRed;
+	BYTE rgbtBlue;
+	BYTE rgbtGreen;
+	BYTE rgbtRed;
 }__attribute__((__packed__))RGBTRIPLE;
 
 #endif /* BITMAP_MYTYPES_H_ */

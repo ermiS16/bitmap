@@ -16,7 +16,7 @@ int main() {
 	int errNo = 0;
 	BITMAPFILEHEADER *bfh = NULL;;
 	BITMAPINFOHEADER *bih = NULL;
-	char *pPixel = NULL;
+	BYTE *pPixel = NULL;
 	RGBQUAD *pPalette = NULL;
 
 	//printf("%d\n", 0x01U);

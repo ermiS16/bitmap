@@ -10,7 +10,7 @@
 #include "myTypes.h"
 #include "schreiben.h"
 
-int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, RGBQUAD *vlaPixel, long counter) {
+int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, BYTE *vlaPixel, long counter) {
 	FILE *new;
 	int pixelCounter = 0;
 

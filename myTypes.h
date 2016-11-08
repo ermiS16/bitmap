@@ -28,7 +28,7 @@ typedef int16_t SHORT;
 typedef int32_t LONG;
 typedef uint32_t DWORD;
 typedef int32_t BOOL;
-typedef int8_t BYTE;
+typedef uint8_t BYTE;
 typedef uint16_t WORD;
 
 #endif

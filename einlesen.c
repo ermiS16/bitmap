@@ -13,13 +13,13 @@
 #include "umwandeln.h"
 #include "schreiben.h"
 
-int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char *pPixel, RGBQUAD *pPalette) {
+int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, BYTE *pPixel, RGBQUAD *pPalette) {
 	BITMAPFILEHEADER bf;
 	BITMAPINFOHEADER bi;
 	RGBQUAD paletteEntry;
 	FILE *filep;
 	RGBQUAD *vlaPalette;
-	RGBQUAD *vlaPixel = NULL;
+	BYTE *vlaPixel = NULL;
 	int usedColors = 0;
 	long counter = 0;
 
@@ -98,7 +98,7 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 		} else {
 			counter++;
 			fread(&vlaPixel[i], sizeof(BYTE), 1, filep);
-			printf("i: %d\nRot: %d Gruen: %d Blau: %d\n", i, vlaPixel[i].rgbRed, vlaPixel[i].rgbGreen, vlaPixel[i].rgbBlue);
+			printf("i: %d %d\n", i, vlaPixel[i]);
 		}
 	}
 	printf("COUNTER: %ld\n", counter);
@@ -126,7 +126,7 @@ int readFile(char* filename, BITMAPFILEHEADER *pbf, BITMAPINFOHEADER *pbi, char 
 		fclose(filep);
 	}
 
-	//pPixel = vlaPixel;
+	pPixel = vlaPixel;
 	pPalette = vlaPalette;
 	return OK;
 }

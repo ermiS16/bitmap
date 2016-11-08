@@ -12,16 +12,17 @@
 /**
  * Wandelt die Informationen der alten Pixel mit Hilfe der Farbpalette um.
  */
-int bmpUmwandeln(BITMAPINFOHEADER bi, RGBQUAD *pPixel, RGBQUAD *pPalette, long counter) {
+int bmpUmwandeln(BITMAPINFOHEADER bi, CHAR *pPixel, RGBQUAD *pPalette, long counter) {
 	RGBTRIPLE *newPalette;
 	newPalette = malloc(bi.biHeight * bi.biWidth * sizeof(RGBTRIPLE));
 	for (int i = 0; i < counter; i++) {
-		/*
-			newPalette[i].rgbtBlue = pPalette[pPixel[i]].rgbBlue;
-			newPalette[i].rgbtGreen = pPalette[pPixel[i]].rgbGreen;
-			newPalette[i].rgbtRed = pPalette[pPixel[i]].rgbRed;
-			*/
+
+			newPalette[i].rgbtBlue = pPalette[i].rgbBlue;
+			newPalette[i].rgbtGreen = pPalette[i].rgbGreen;
+			newPalette[i].rgbtRed = pPalette[i].rgbRed;
+			//newPalette[i].rgbtRed = pPalette[pPixel[i]].rgbRed;
 	}
+
 	//free(pPixel);
 	//pPixel = newPalette;
 	return OK;

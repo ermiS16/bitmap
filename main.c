@@ -19,7 +19,7 @@ int main() {
 	RGBQUAD *pPalette = NULL;
 
 	//printf("%d\n", 0x01U);
-	errno = readFile("/home/andre/workspace/GSP/bitmap/aufgabe3_bild1.bmp",
+	errno = readFile("testBilder/aufgabe3_bild1.bmp",
 			bfh, bih, pPixel, pPalette);
 	if (errno == FILE_NOT_FOUND) {
 		printf(FILE_NOT_FOUND_TEXT);

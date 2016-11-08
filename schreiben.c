@@ -15,7 +15,7 @@ int writeFile(BITMAPFILEHEADER bf, BITMAPINFOHEADER bi, char *vlaPixel, long cou
 	int pixelCounter = 0;
 
 
-	new = fopen("/home/andre/workspace/GSP/bitmap/newFile.bmp", "w+");
+	new = fopen("testBilder/newFile.bmp", "w+");
 
 	fwrite(&bf.bfType, sizeof(bf.bfType), 1, new);
 	fwrite(&bf.bfSize, sizeof(bf.bfSize), 1, new);

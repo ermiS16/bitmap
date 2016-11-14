@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include "myError.h"
 #include "myTypes.h"
+<<<<<<< HEAD
 #include "myConsts.h"
 #include "Bitmap.h"
 
@@ -128,5 +129,34 @@ int main(int argc, char** argv) {
     free(pixel24Bit);
     
     return (EXIT_SUCCESS);
+=======
+#include "main.h"
+#include "einlesen.h"
+
+int main() {
+	int errNo = 0;
+	BITMAPFILEHEADER *bfh = NULL;;
+	BITMAPINFOHEADER *bih = NULL;
+	BYTE *pPixel = NULL;
+	RGBQUAD *pPalette = NULL;
+
+	//printf("%d\n", 0x01U);
+
+	errNo = readFile("testBilder/littleBitmap2_8.bmp",
+			bfh, bih, pPixel, pPalette);
+	if (errNo == FILE_NOT_FOUND) {
+		printf(FILE_NOT_FOUND_TEXT);
+		return -1;
+	}
+
+	if (errNo != OK) {
+		printf(MALLOC_FAIL_TEXT);
+		return -1;
+	}
+
+	printf("Beendet");
+
+	return errNo;
+>>>>>>> 079ec1b2f4c856218ed72e8fdb4c9f49560ee4f2
 }
 

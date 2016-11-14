@@ -1,14 +1,39 @@
 /*
- * myError.h
- *
- *  Created on: 05.11.2016
- *      Author: andre
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
-#ifndef BITMAP_MYERROR_H_
-#define BITMAP_MYERROR_H_
+/* 
+ * File:   myError.h
+ * Author: andre
+ *
+ * Created on 13. November 2016, 20:57
+ */
+
+#ifndef MYERROR_H
+#define MYERROR_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+int errNo;
 
 #define OK 1
+
+            
+#define NOT_OK -1
+#define NOT_OK_TEXT "Unknown Error"
+            
+#define COLORMAP_ERROR -2
+#define COLORMAP_ERROR_TEXT "Wrong size of Colormap"
+    
+#define NOT_A_BITMAP -3
+#define NOT_A_BITMAP_TEXT "File is not a Bitmap"
+    
+#define SIZE_ERROR -4
+#define SIZE_ERROR_TEXT "Wrong size of Bitmap"
 
 #define MALLOC_FAIL -7
 #define MALLOC_FAIL_TEXT "Malloc failed"
@@ -16,5 +41,11 @@
 #define FILE_NOT_FOUND -8
 #define FILE_NOT_FOUND_TEXT "File not found"
 
+int errorHandling(void);
 
-#endif /* BITMAP_MYERROR_H_ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MYERROR_H */
+

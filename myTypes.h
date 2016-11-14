@@ -1,36 +1,33 @@
 /*
- * myTypes.h
- *
- * Benutzt nicht die Standart int-Types,
- * da sonst Fehler bei unterschiedlichen Systemen auftreten koennen
- *
- *  Created on: 05.11.2016
- *      Author: andre
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
-#ifndef BITMAP_MYTYPES_H_
-#define BITMAP_MYTYPES_H_
-#ifdef _WIN
+/* 
+ * File:   myTypes.h
+ * Author: andre
+ *
+ * Created on 13. November 2016, 20:55
+ */
+
+#ifndef MYTYPES_H
+#define MYTYPES_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
 
 typedef int8_t CHAR;
 typedef int16_t SHORT;
 typedef int32_t LONG;
-typedef uint64_t DWORD;
+typedef uint32_t DWORD;
 typedef int32_t BOOL;
-typedef int8_t BYTE;
+typedef uint8_t BYTE;
 typedef uint16_t WORD;
 
-#else
-
-typedef __int8_t CHAR;
-typedef __int16_t SHORT;
-typedef __int32_t LONG;
-typedef __uint32_t DWORD;
-typedef __int32_t BOOL;
-typedef __uint8_t BYTE;
-typedef __uint16_t WORD;
-
-#endif
 
 typedef struct tagBITMAPFILEHEADER {
 	WORD bfType;
@@ -62,9 +59,16 @@ typedef struct tagRGBQUAD {
 }__attribute__((__packed__))RGBQUAD;
 
 typedef struct tagRGBTRIPLE {
-	BYTE rgbBlue;
+        BYTE rgbRed;	
+        BYTE rgbBlue;
 	BYTE rgbGreen;
-	BYTE rgbRed;
+	
 }__attribute__((__packed__))RGBTRIPLE;
 
-#endif /* BITMAP_MYTYPES_H_ */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MYTYPES_H */
+

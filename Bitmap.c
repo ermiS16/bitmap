@@ -127,7 +127,7 @@ BITMAPFILEHEADER* convertFileHeader(BITMAPFILEHEADER *fileheader) {
     fh->bfSize = fileheader->bfSize;
     fh->bfReserved1 = fileheader->bfReserved1;
     fh->bfReserved2 = fileheader->bfReserved2;
-    fh->bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + 1;
+    fh->bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
      
     return fh;
 }

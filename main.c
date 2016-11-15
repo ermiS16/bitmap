@@ -17,6 +17,7 @@
 #include "myTypes.h"
 #include "myConsts.h"
 #include "Bitmap.h"
+#include "RLE8.h"
 
 
 /*
@@ -37,7 +38,7 @@ int main(int argc, char** argv) {
     
     errNo = OK;
     
-    source = openFile("/home/andre/workspace/GSP/bitmap/aufgabe3_bild1.bmp", READ_MODE);
+    source = openFile("testBilder/amrandrle.bmp", READ_MODE);
     
     if (errNo != OK) {
         return errorHandling();
@@ -79,8 +80,8 @@ int main(int argc, char** argv) {
         return errorHandling();
     }
     
-    pixel8Bit = readPixel(source, width, height);
-    
+    pixel8Bit = readPixel(source, width, height, infoheader);
+
     if (errNo != OK) {
         return errorHandling();
     }
@@ -104,13 +105,13 @@ int main(int argc, char** argv) {
         return errorHandling();
     }
     
-    dest = openFile("/home/andre/workspace/GSP/bitmap/newFile.bmp", WRITE_MODE);
+    dest = openFile("testBilder/newFile.bmp", WRITE_MODE);
     
     if (errNo != OK) {
         return errorHandling();
     }
     
-    errNo = writeFile(dest, fileheader, infoheader, pixel24Bit, width, height);
+    errNo = writeBitmap(dest, fileheader, infoheader, pixel24Bit, width, height);
     
     if (errNo != OK) {
         return errorHandling();

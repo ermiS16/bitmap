@@ -11,6 +11,9 @@
 #include "myTypes.h"
 #include "myConsts.h"
 #include "Bitmap.h"
+#include "RLE8.h"
+
+#define FILEHEADER_TYPE_BITMAP 0x4D42 // Dez: 19778 -> ASCII: BM
 
 
 BITMAPFILEHEADER* readFileHeader(FILE *source) {
@@ -28,6 +31,11 @@ BITMAPFILEHEADER* readFileHeader(FILE *source) {
     
     fread(fh, sizeof(BITMAPFILEHEADER), 1, source);
     
+    if(fh->bfType != FILEHEADER_TYPE_BITMAP){
+    	errNo = NOT_A_BITMAP;
+    	return NULL;
+    }
+
     return fh;
 }
 
@@ -63,7 +71,7 @@ RGBQUAD* readColormap(FILE *source, int usedColors) {
     
     cm = (RGBQUAD*) malloc(sizeof(RGBQUAD) * usedColors);
     if (NULL == cm) {
-        errNo MALLOC_FAIL;
+        errNo = MALLOC_FAIL;
         return NULL;
     }
     
@@ -73,7 +81,7 @@ RGBQUAD* readColormap(FILE *source, int usedColors) {
     return cm;
 }
 
-BYTE* readPixel(FILE *source, int width, int height) {
+BYTE* readPixel(FILE *source, int width, int height, BITMAPINFOHEADER *infoheader) {
     BYTE *p8B = NULL;
     if (NULL == source) {
         errNo = FILE_NOT_FOUND;
@@ -84,15 +92,19 @@ BYTE* readPixel(FILE *source, int width, int height) {
         errNo = SIZE_ERROR;
         return NULL;
     }
-    
+
+
     p8B = (BYTE*) malloc(sizeof(BYTE) * width * height);
     if (NULL == p8B) {
         errNo = MALLOC_FAIL;
         return NULL;
     }
     
-    fread(p8B, sizeof(BYTE), (width * height), source);
-    
+    if(infoheader->biCompression == 1){
+    	p8B = rleDecompress(source, width, height);
+    }else{
+    	fread(p8B, sizeof(BYTE), (width * height), source);
+    }
     return p8B;
 } 
 
@@ -106,9 +118,9 @@ RGBTRIPLE* convertPixel( int width, int height, RGBQUAD colormap[256], BYTE pixe
     }
     
     for (int i = 0; i < width * height; i++) {
-        pixel.rgbBlue = colormap[pixel8Bit[i]].rgbBlue;
-        pixel.rgbGreen = colormap[pixel8Bit[i]].rgbGreen;
-        pixel.rgbRed = colormap[pixel8Bit[i]].rgbRed;
+        pixel.rgbtBlue = colormap[pixel8Bit[i]].rgbBlue;
+        pixel.rgbtGreen = colormap[pixel8Bit[i]].rgbGreen;
+        pixel.rgbtRed = colormap[pixel8Bit[i]].rgbRed;
         p24B[i] = pixel;
     }
     
@@ -157,7 +169,7 @@ BITMAPINFOHEADER* convertInfoHeader(BITMAPINFOHEADER *infoheader) {
     return ih;
 }
 
-int writeFile(FILE *dest, BITMAPFILEHEADER *fileheader, BITMAPINFOHEADER *infoheader, RGBTRIPLE *pixel24Bit, int width, int height) {
+int writeBitmap(FILE *dest, BITMAPFILEHEADER *fileheader, BITMAPINFOHEADER *infoheader, RGBTRIPLE *pixel24Bit, int width, int height) {
     if (NULL == dest) {
         return FILE_NOT_FOUND;
     }

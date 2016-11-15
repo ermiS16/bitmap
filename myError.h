@@ -41,6 +41,12 @@ int errNo;
 #define FILE_NOT_FOUND -8
 #define FILE_NOT_FOUND_TEXT "File not found"
 
+#define INFOHEADER_NOT_FOUND -9
+#define INFOHEADER_NOT_FOUND_TEXT "Infoheader not found"
+
+#define CANT_COMPRESS -10
+#define CANT_COMPRESS_TEXT "Compression failed"
+
 int errorHandling(void);
 
 #ifdef __cplusplus

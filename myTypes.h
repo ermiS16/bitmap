@@ -59,9 +59,9 @@ typedef struct tagRGBQUAD {
 }__attribute__((__packed__))RGBQUAD;
 
 typedef struct tagRGBTRIPLE {	
-        BYTE rgbBlue;
-	BYTE rgbGreen;
-        BYTE rgbRed;
+        BYTE rgbtBlue;
+        BYTE rgbtGreen;
+        BYTE rgbtRed;
 }__attribute__((__packed__))RGBTRIPLE;
 
 

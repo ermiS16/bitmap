@@ -20,7 +20,8 @@ extern "C" {
 
 #define READ_MODE "r"
 #define WRITE_MODE "w+"
-    
+#define READ_BINARY_MODE "rb"
+
 #define MAX_USED_COLORS 256
 #define BITMAP_TYPE 0x4D42
 #define TYPE_8_BIT 8

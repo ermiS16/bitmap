@@ -35,6 +35,9 @@ int errNo;
 #define SIZE_ERROR -4
 #define SIZE_ERROR_TEXT "Wrong size of Bitmap"
 
+#define NO_RECTANGLE_FOUND -5
+#define NO_RECTANGLE_FOUND_TEXT "No Rectangle found"
+
 #define MALLOC_FAIL -7
 #define MALLOC_FAIL_TEXT "Malloc failed"
 

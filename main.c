@@ -17,7 +17,11 @@
 #include "myTypes.h"
 #include "myConsts.h"
 #include "Bitmap.h"
+<<<<<<< HEAD
 #include "RLE8.h"
+=======
+#include "RectangleFinder.h"
+>>>>>>> 6cf85f0082f102f9679a8a7762b545811fa1b4d0
 
 
 /*
@@ -35,6 +39,10 @@ int main(int argc, char** argv) {
     int usedColors;
     int width;
     int height;
+    int indexUL;
+    int indexUR;
+    int indexBL;
+    int indexBR;
     
     errNo = OK;
     
@@ -68,7 +76,6 @@ int main(int argc, char** argv) {
     height = infoheader->biHeight;
     width = infoheader->biWidth;
     offset = fileheader->bfOffBits;
-    printf("%d x %d\n", height, width);
     
     if (errNo != OK) {
         return errorHandling();
@@ -92,11 +99,17 @@ int main(int argc, char** argv) {
         return errorHandling();
     }
     
-    pixel24Bit = convertPixel( width, height, colormap, pixel8Bit);
+    pixel24Bit = convertPixel(width, height, colormap, pixel8Bit);
     
     if (errNo != OK) {
         return errorHandling();
     }
+    
+    findRedRectangle(pixel24Bit, width, height, &indexBL, &indexBR, &indexUL, &indexUR);
+    setFrame(pixel24Bit, width, indexBL, indexBR, indexUL, indexUR);
+    
+    findGreenRectangle(pixel24Bit, width, height, &indexBL, &indexBR, &indexUL, &indexUR);
+    setFrame(pixel24Bit, width, indexBL, indexBR, indexUL, indexUR);
     
     fileheader = convertFileHeader(fileheader);
     infoheader = convertInfoHeader(infoheader);

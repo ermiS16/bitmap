@@ -13,15 +13,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "myError.h"
 #include "myTypes.h"
 #include "myConsts.h"
 #include "Bitmap.h"
-<<<<<<< HEAD
-#include "RLE8.h"
-=======
 #include "RectangleFinder.h"
->>>>>>> 6cf85f0082f102f9679a8a7762b545811fa1b4d0
+#include "RLE8.h"
 
 
 /*
@@ -39,29 +37,44 @@ int main(int argc, char** argv) {
     int usedColors;
     int width;
     int height;
-    int indexUL;
-    int indexUR;
-    int indexBL;
-    int indexBR;
+    int indexRUL;
+    int indexRUR;
+    int indexRBL;
+    int indexRBR;
+    
+    int indexGUL;
+    int indexGUR;
+    int indexGBL;
+    int indexGBR;
+    
+    RGBTRIPLE red;
+    red.rgbBlue = NO_COLOR;
+    red.rgbGreen = NO_COLOR;
+    red.rgbRed = FULL_COLOR;
+    
+    RGBTRIPLE green;
+    green.rgbBlue = NO_COLOR;
+    green.rgbGreen = FULL_COLOR;
+    green.rgbRed = NO_COLOR;
     
     errNo = OK;
     
-    source = openFile("testBilder/amrandrle.bmp", READ_MODE);
+    source = openFile(BITMAP_SOURCE, READ_MODE);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
     fileheader = readFileHeader(source);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
     infoheader = readInfoHeader(source);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     if (infoheader->biClrUsed == 0) {
         usedColors = MAX_USED_COLORS;
@@ -70,6 +83,7 @@ int main(int argc, char** argv) {
             usedColors = infoheader->biClrUsed;
         } else {
             errNo = COLORMAP_ERROR;
+            return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
         }
     }
     
@@ -77,71 +91,102 @@ int main(int argc, char** argv) {
     width = infoheader->biWidth;
     offset = fileheader->bfOffBits;
     
-    if (errNo != OK) {
-        return errorHandling();
-    }
-    
-    colormap = readColormap(source, usedColors);
+    printf("Size of Bitmap: %d x %d\n", width , height);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
-    pixel8Bit = readPixel(source, width, height, infoheader);
-
+    if (infoheader->biBitCount == 8) {
+    
+        colormap = readColormap(source, usedColors);
+    
+        if (errNo != OK) {
+            return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
+        }
+    
+        if (infoheader->biCompression == 1) {
+            pixel8Bit = rleDecompress(source, width, height);
+        } else {
+            pixel8Bit = readPixel(source, width, height);
+        }
+        
+        if (errNo != OK) {
+            return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
+        }
+    
+        pixel24Bit = convertPixel(width, height, colormap, pixel8Bit);
+    
+        if (errNo != OK) {
+            return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
+        }
+        
+        free(pixel8Bit);
+        pixel8Bit = NULL;
+        free(colormap);
+        colormap = NULL;
+    } else {
+        if (infoheader->biCompression != 0) {
+            errNo = CANT_COMPRESS;
+            return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
+        }
+        pixel24Bit = read24BitPixel(source, width, height);
+        
+    }
+    
+    closeFile(source);
+    source = NULL;
+    
+    
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
-    errNo = closeFile(source);
+    findRectangle(pixel24Bit, red, width, height, &indexRBL, &indexRBR, &indexRUL, &indexRUR);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
-    pixel24Bit = convertPixel(width, height, colormap, pixel8Bit);
+    findRectangle(pixel24Bit, green, width, height, &indexGBL, &indexGBR, &indexGUL, &indexGUR);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
-    findRedRectangle(pixel24Bit, width, height, &indexBL, &indexBR, &indexUL, &indexUR);
-    setFrame(pixel24Bit, width, indexBL, indexBR, indexUL, indexUR);
+    findFramePoints(pixel24Bit, width, indexRBL, indexRBR, indexRUL, indexRUR, indexGBL, indexGBR, indexGUL, indexGUR);
     
-    findGreenRectangle(pixel24Bit, width, height, &indexBL, &indexBR, &indexUL, &indexUR);
-    setFrame(pixel24Bit, width, indexBL, indexBR, indexUL, indexUR);
+    if (errNo != OK) {
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
+    }
     
     fileheader = convertFileHeader(fileheader);
     infoheader = convertInfoHeader(infoheader);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(source, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
-    dest = openFile("testBilder/newFile.bmp", WRITE_MODE);
+    
+    dest = openFile(BITMAP_DESTINATION, WRITE_MODE);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(dest, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
-    errNo = writeBitmap(dest, fileheader, infoheader, pixel24Bit, width, height);
+    writeFile(dest, fileheader, infoheader, pixel24Bit, width, height);
     
     if (errNo != OK) {
-        return errorHandling();
+        return errorHandling(dest, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     }
     
-    errNo = closeFile(dest);
+    closeFile(dest);
+    dest = NULL;
     
-    if (errNo != OK) {
-        return errorHandling();
-    }
+    cleanUp(dest, fileheader, infoheader, colormap, pixel8Bit, pixel24Bit);
     
-    free(fileheader);
-    free(infoheader);
-    free(colormap);
-    free(pixel8Bit);
-    free(pixel24Bit);
-    
+    printf("----->Bitmap successfully converted<-----");
+    fflush(stdout);
     return (EXIT_SUCCESS);
 }
 

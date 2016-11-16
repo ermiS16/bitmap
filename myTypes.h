@@ -59,11 +59,15 @@ typedef struct tagRGBQUAD {
 }__attribute__((__packed__))RGBQUAD;
 
 typedef struct tagRGBTRIPLE {	
-        BYTE rgbtBlue;
-        BYTE rgbtGreen;
-        BYTE rgbtRed;
+        BYTE rgbBlue;
+	BYTE rgbGreen;
+        BYTE rgbRed;
 }__attribute__((__packed__))RGBTRIPLE;
 
+typedef struct pixelPosition {
+    WORD xPos;
+    WORD yPos;
+} PIXEL_POS;
 
 #ifdef __cplusplus
 }

@@ -17,8 +17,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-int errNo;
+
+#include "myTypes.h"
 
 #define OK 1
 
@@ -50,7 +50,17 @@ int errNo;
 #define CANT_COMPRESS -10
 #define CANT_COMPRESS_TEXT "Compression failed"
 
-int errorHandling(void);
+#define PIXEL_OUT_OF_BOUNDS -11
+#define PIXEL_OUT_OF_BOUNDS_TEXT "Pixel-Array out of bounds"
+    
+#define WRONG_FRAME_SIZE -12
+#define WRONG_FRAME_SIZE_TEXT "Computed size of frame is not right"
+
+int errNo;
+    
+int errorHandling(FILE *file, BITMAPFILEHEADER *fileheader, BITMAPINFOHEADER *infoheader, RGBQUAD *colormap, BYTE *pixel8Bit, RGBTRIPLE *pixel24Bit);
+
+int errorTest(FILE *file, BITMAPFILEHEADER *fileheader, BITMAPINFOHEADER *infoheader, RGBQUAD *colormap, BYTE *pixel8Bit, RGBTRIPLE *pixel24Bit);
 
 #ifdef __cplusplus
 }

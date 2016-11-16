@@ -18,15 +18,15 @@
 extern "C" {
 #endif
 
-#include "myTypes.h"
-
+#include "myTypes.h"    
+    
 BITMAPFILEHEADER* readFileHeader(FILE *source);
 
 BITMAPINFOHEADER* readInfoHeader(FILE *source);
 
 RGBQUAD* readColormap(FILE *source, int usedColors);
 
-BYTE* readPixel(FILE *source, int width, int height, BITMAPINFOHEADER *infoheader);
+BYTE* readPixel(FILE *source, int width, int height);
 
 RGBTRIPLE* convertPixel(int width, int height, RGBQUAD *colormap, BYTE *pixel8Bit);
 
@@ -34,7 +34,9 @@ BITMAPFILEHEADER* convertFileHeader(BITMAPFILEHEADER *fileheader);
 
 BITMAPINFOHEADER* convertInfoHeader(BITMAPINFOHEADER *infoheader);
 
-int writeBitmap(FILE *dest, BITMAPFILEHEADER *fileheader, BITMAPINFOHEADER *infoheader, RGBTRIPLE *pixel24Bit, int width, int height);
+int writeFile(FILE *dest, BITMAPFILEHEADER *fileheader, BITMAPINFOHEADER *infoheader, RGBTRIPLE *pixel24Bit, int width, int height);
+
+RGBTRIPLE* read24BitPixel(FILE *source, int width, int height);
 
 FILE* openFile(char *filename, char *mode);
 

@@ -18,12 +18,13 @@
 extern "C" {
 #endif
 
-int findRedRectangle(RGBTRIPLE *pixel24Bit, int width, int height, int *bl, int *br, int *ul, int *ur);
-
-int findGreenRectangle(RGBTRIPLE *pixel24Bit, int width, int height, int *bl, int *br, int *ul, int *ur);
+int findRectangle(RGBTRIPLE *pixel24Bit, RGBTRIPLE color, int width, int height, int *bl, int *br, int *ul, int *ur);
 
 int setPixel(RGBTRIPLE *pixel24Bit, int index);
 
+int findFramePoints(RGBTRIPLE *pixel24Bit, int width, int rbl, int rbr, int rul, int rur, int gbl, int gbr, int gul, int gur);
+
+int setFrame(RGBTRIPLE *pixel24Bit, int width, int bl, int br, int ul, int ur);
 
 #ifdef __cplusplus
 }
